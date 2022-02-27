@@ -1,0 +1,689 @@
+# Name: ExtactFeaturesByLocationAndAttribute.py
+# Description: Extract features to a new feature class based on a Location and an attribute query
+
+# Import arcpy and set path to data
+import arcpy
+#Captura ruta de la base de datos
+input_gdb = arcpy.env.workspace = arcpy.GetParameterAsText(0)
+#Captura ruta del dataset
+input_dataset = arcpy.env.workspace = arcpy.GetParameterAsText(1)
+#Captura la capa de clasificación de suelo
+input_Clasificacion_suelo = arcpy.env.workspace = arcpy.GetParameterAsText(2)
+#Captura el atributo de tipo de clasificación de suelo
+input_Clasificacion_tipo = arcpy.env.workspace = arcpy.GetParameterAsText(3)
+#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Clasificacion_suelo\tipo"
+input_Tipo_Riesgo = arcpy.env.workspace = arcpy.GetParameterAsText(4)
+#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Tipo_Riesgo"
+input_Tratamiento_Urbanistico = arcpy.env.workspace = arcpy.GetParameterAsText(5)
+#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Tratamiento_Urbanistico"
+input_Tratamiento_Urbanistico_tipo = arcpy.env.workspace = arcpy.GetParameterAsText(6)
+#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Tratamiento_Urbanistico"
+input_Clasificacion_Uso_Suelo = arcpy.env.workspace = arcpy.GetParameterAsText(7)
+#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Clasificacion_Uso_Suelo"
+input_Municipio = arcpy.env.workspace = arcpy.GetParameterAsText(8)
+#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Municipio"
+input_Equipamientos = arcpy.env.workspace = arcpy.GetParameterAsText(9)
+#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Equipamientos"
+input_Espacio_Publico = arcpy.env.workspace = arcpy.GetParameterAsText(10)
+#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Espacio_Publico"
+input_Vias = arcpy.env.workspace = arcpy.GetParameterAsText(11)
+#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Vias"
+input_Vias_tipo = arcpy.env.workspace = arcpy.GetParameterAsText(12)
+#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Vias\tipo"
+input_Servicios_Publicos = arcpy.env.workspace = arcpy.GetParameterAsText(13)
+#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Servicios_publicos"
+input_Servicios_Publicos_tipo = arcpy.env.workspace = arcpy.GetParameterAsText(14)
+#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Servicios_publicos\tipo"
+input_Zonavis = arcpy.env.workspace = arcpy.GetParameterAsText(15)
+#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\ZonaVIS"
+input_Reubicacion = arcpy.env.workspace = arcpy.GetParameterAsText(16)
+#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Reubicacion"
+input_Proteccion = arcpy.env.workspace = arcpy.GetParameterAsText(17)
+#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Proteccion"
+input_Desarrollo_restringido = arcpy.env.workspace = arcpy.GetParameterAsText(18)
+#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Suburbano"
+input_Desarrollo_restringido_tipo = arcpy.env.workspace = arcpy.GetParameterAsText(19)
+#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Desarrollo_Restringido_tipo"
+input_Rural_Produccion= arcpy.env.workspace = arcpy.GetParameterAsText(20)
+#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Rural_Produccion"
+input_Plusvalia= arcpy.env.workspace = arcpy.GetParameterAsText(21)
+#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Plusvalia"
+
+##Topologia
+topo_name = "Topology"
+cluster_tol = 0.001
+
+# Crear una capa temporal (Urbano-Expansion)
+arcpy.MakeFeatureLayer_management(input_Clasificacion_suelo, "Clas_Urb_Exp_lyr")
+#De la capa clasificacion del suelo seleccionar que sean de tipo Urbano y Expansion
+arcpy.SelectLayerByAttribute_management("Clas_Urb_Exp_lyr", 'NEW_SELECTION', "lower("+ input_Clasificacion_tipo + ") IN (lower('Expansion'), lower('Urbano'))")
+result7= arcpy.GetCount_management("Clas_Urb_Exp_lyr")
+# Crear una capa solo Urbano y Rural
+arcpy.CopyFeatures_management("Clas_Urb_Exp_lyr", input_dataset+'\Suelo_Urbano_Expansion')
+
+# Conteo numero de poligonos de uso del suelo Urbano
+arcpy.MakeFeatureLayer_management(input_Clasificacion_suelo, "Clas_Urb_lyr")
+#De la capa sin equipamientos seleccionar que sean de tipo Urbano
+arcpy.SelectLayerByAttribute_management("Clas_Urb_lyr", 'NEW_SELECTION', "lower(" + input_Clasificacion_tipo + ") IN (lower('Urbano'))")
+#Contar poligonos urbanos
+num_urbano= arcpy.GetCount_management("Clas_Urb_lyr")
+
+# Conteo numero de poligonos de uso del suelo Expansion
+arcpy.MakeFeatureLayer_management(input_Clasificacion_suelo, "Clas_Exp_lyr")
+#De la capa sin equipamientos seleccionar que sean de tipo Urbano
+arcpy.SelectLayerByAttribute_management("Clas_Exp_lyr", 'NEW_SELECTION', "lower(" + input_Clasificacion_tipo + ") IN (lower('Expansion'))")
+#Contar poligonos expansion
+num_expansion= arcpy.GetCount_management("Clas_Exp_lyr")
+
+# Conteo numero de poligonos de uso del suelo Rural
+arcpy.MakeFeatureLayer_management(input_Clasificacion_suelo, "Clas_Rur_lyr")
+#De la capa sin equipamientos seleccionar que sean de tipo Urbano
+arcpy.SelectLayerByAttribute_management("Clas_Rur_lyr", 'NEW_SELECTION', "lower(" + input_Clasificacion_tipo + ") IN (lower('Rural'))")
+#Contar poligonos rural
+num_rural= arcpy.GetCount_management("Clas_Rur_lyr")
+
+#Matriz de feaures class y reglas topologicas#
+input_fc = r""+ input_Clasificacion_suelo +" 1 1; "+ input_Tipo_Riesgo +" 1 1; "+ input_Tratamiento_Urbanistico +" 1 1; "+ input_Clasificacion_Uso_Suelo +" 1 1;" + input_dataset +"\Suelo_Urbano_Expansion 1 1;"+ input_Municipio +" 1 1"
+rules = r"'Must Not Overlap (Area)' "+ input_Clasificacion_suelo +" # "+ input_Clasificacion_suelo + " #;'Must Be Covered By Feature Class Of (Area-Area)' " + input_Municipio +" # "+ input_Clasificacion_suelo +" #;'Must Not Have Gaps (Area)' "+ input_Clasificacion_suelo +" # "+ input_Clasificacion_suelo +" #;'Boundary Must Be Covered By Boundary Of (Area-Area)' "+ input_Clasificacion_suelo +" # "+ input_Municipio +" #;'Must Be Covered By Feature Class Of (Area-Area)' "+ input_Municipio +" # "+ input_Tipo_Riesgo +" #;'Must Be Covered By Feature Class Of (Area-Area)' "+ input_dataset +"\Suelo_Urbano_Expansion # "+ input_Tratamiento_Urbanistico +" #;'Must Be Covered By Feature Class Of (Area-Area)' "+ input_dataset +"\Suelo_Urbano_Expansion # "+ input_Clasificacion_Uso_Suelo +" #"
+validate = "true"
+
+#Creacion topologia
+out_topo = arcpy.CreateTopology_management(input_dataset, topo_name, cluster_tol)
+print("Created topology.")
+# Loop through the list of feature classes and add them to the topology
+input_fcL = input_fc.split(";")
+for fc in input_fcL:
+    param = fc.rsplit(" ", 2)
+    in_fc = param[0]
+    #xy_rank = param[1]
+    #z_rank = param[2]
+    arcpy.AddFeatureClassToTopology_management(out_topo, in_fc, 1, 1)
+    print(arcpy.GetMessages())
+    
+# Loop through the list of rules and add rules to the topology
+rulesL = rules.split(";")
+for rule in rulesL:
+    r = rule.rsplit(" ", 4)
+    rule_type = r[0].replace("'","")
+    in_fc1 = r[1]
+    subtype1 = r[2]
+    in_fc2 = r[3]
+    subtype2 = r[4]
+    arcpy.AddRuleToTopology_management(out_topo, rule_type, in_fc1, subtype1, in_fc2, subtype2)
+    print(arcpy.GetMessages())
+    
+# Validate the topology
+if validate == "true":
+    try:
+        arcpy.ValidateTopology_management(out_topo)
+    except:
+        print(arcpy.GetMessages())
+print("Finished.")
+
+
+####            REGLA  1        ####
+
+# Crear una capa temporal
+arcpy.MakeFeatureLayer_management(input_Clasificacion_suelo, "Clasificacion_Suelo_lyr")
+# Seleccion de clasificacion que si intersecta con el municipio
+arcpy.SelectLayerByLocation_management ("Clasificacion_Suelo_lyr", "intersect", input_Municipio)
+result = arcpy.GetCount_management("Clasificacion_Suelo_lyr")
+#Seleccioon de clasificacion que no se intersecta con el municipio
+arcpy.SelectLayerByLocation_management ("Clasificacion_Suelo_lyr", "intersect", input_Municipio,0,"SWITCH_SELECTION")
+result1 = arcpy.GetCount_management("Clasificacion_Suelo_lyr")
+arcpy.CopyFeatures_management("Clasificacion_Suelo_lyr", input_dataset+'\Resultado1')
+
+print("Regla No 1: Hay "+ str(result1) +" elemento(s) que no cumplen con la regla.")
+
+#arcpy.AddMessage("Regla No 1:\t Hay "+ str(result1) +" elemento(s) que no cumplen con la regla.\n")
+
+## REGLA 2 ##
+
+print("Regla No 2: Revisar la regla topologica (Must not Overlap) de la Capa: Clasificacion del Suelo, utilizando el visor")
+
+## REGLA 3 ##
+
+print("Regla No 3: Revisar la regla topologica (Must be Covered By) de la Capa: Clasificacion del Suelo-Municipio, utilizando el visor")
+
+
+## REGLA 4 ##
+
+# Crear una capa temporal
+arcpy.MakeFeatureLayer_management(input_Clasificacion_suelo, "Clasificacion_Suelo_lyr4")
+#De la capa sin equipamientos seleccionar que sean de tipo Urbano y Expansion
+arcpy.SelectLayerByAttribute_management("Clasificacion_Suelo_lyr4", 'NEW_SELECTION', input_Clasificacion_tipo + " IS NULL OR " +input_Clasificacion_tipo +" = ''")
+result4= arcpy.GetCount_management("Clasificacion_Suelo_lyr4")
+arcpy.CopyFeatures_management("Clasificacion_Suelo_lyr4", input_dataset+'\Resultado4')
+
+print("Regla No 4: Hay "+ str(result4) +" elemento(s) que no cumplen con la regla.")
+
+## REGLA 5 ##
+
+print("Regla No 5: Revisar la regla topologica (Must Not Have Gaps) Capa: Clasificacion del Suelo y la regla topologica (Boundary Must Be Covered By Boundary Of) de la capa: Clasificacion del Suelo-Municipio, utilizando el visor")
+
+## REGLA 6 ##
+
+print("Regla No 6: Revisar la regla topologica (Must not Overlap) de la Capa: Clasificacion del Suelo, utilizando el visor")
+
+## REGLA 7 ##
+
+# Crear una capa temporal
+arcpy.MakeFeatureLayer_management(input_Clasificacion_suelo, "Clasificacion_Suelo_lyr7")
+#Dominios de tipo Urbano, Rural y Expansion
+arcpy.SelectLayerByAttribute_management("Clasificacion_Suelo_lyr7", 'NEW_SELECTION', "lower(" + input_Clasificacion_tipo + ") NOT IN (lower('Expansion'), lower('Rural'), lower('Urbano')) AND "+ input_Clasificacion_tipo +" IS NOT NULL AND NOT " + input_Clasificacion_tipo + " = ''")
+result7= arcpy.GetCount_management("Clasificacion_Suelo_lyr7")
+arcpy.CopyFeatures_management("Clasificacion_Suelo_lyr7", input_dataset+'\Resultado7')
+
+print("Regla No 7: Hay "+ str(result7) +" elemento(s) que no cumplen con la regla.")
+
+## REGLA 8 Y 9 ##
+#No aplica revision#
+print("Regla No 8: No aplica para el validador")
+print("Regla No 9: No aplica para el validador")
+
+
+##  REGLA 10 ### 
+
+# Crear una capa temporal
+arcpy.MakeFeatureLayer_management(input_Clasificacion_suelo, "Clasificacion_Suelo_lyr10")
+arcpy.MakeFeatureLayer_management(input_Equipamientos, "Equipamientos_lyr10")
+# Intersect de equipamientos y clasificacion del suelo
+arcpy.Intersect_analysis (["Clasificacion_Suelo_lyr10", "Equipamientos_lyr10"], input_dataset + "\intersect_clas_Equi", "ALL", "", "")
+#De la capa con equipamientos seleccionar que sean de tipo Urbano y Expansion
+arcpy.MakeFeatureLayer_management(input_dataset + "\intersect_clas_Equi", "intersect_clas_Equi_lyr10")
+arcpy.SelectLayerByAttribute_management("intersect_clas_Equi_lyr10", 'NEW_SELECTION', "lower(" + input_Clasificacion_tipo + ") IN (lower('Expansion'),lower('Urbano'))")
+#Realizar un resumen por la columna FID_CLasificacion_Suelo
+arcpy.Frequency_analysis("intersect_clas_Equi_lyr10", input_gdb +"\Stadisticas_Equi", ["FID_Clasificacion_Suelo"])
+num_equi= arcpy.GetCount_management(input_gdb +"\Stadisticas_Equi")
+
+if (int(str(num_urbano)) + int(str(num_expansion))) == int(str(num_equi)):
+    print("Regla No 10: La base de datos es CONFORME con la regla 10")
+else:
+    print("Regla No 10: La base de datos es NO CONFORME con la regla 10")
+    
+arcpy.Delete_management(input_dataset + "\intersect_clas_Equi")
+arcpy.Delete_management(input_gdb +"\Stadisticas_Equi")
+
+##  REGLA 11 ###
+
+# Crear una capa temporal
+arcpy.MakeFeatureLayer_management(input_Clasificacion_suelo, "Clasificacion_Suelo_lyr11")
+arcpy.MakeFeatureLayer_management(input_Espacio_Publico, "Espacio_Publico_lyr11")
+# Intersect de equipamientos y clasificacion del suelo
+arcpy.Intersect_analysis (["Clasificacion_Suelo_lyr11", "Espacio_Publico_lyr11"], input_dataset + "\intersect_clas_Esp", "ALL", "", "")
+#De la capa con equipamientos seleccionar que sean de tipo Urbano y Expansion
+arcpy.MakeFeatureLayer_management(input_dataset + "\intersect_clas_Esp", "intersect_clas_Esp_lyr11")
+arcpy.SelectLayerByAttribute_management("intersect_clas_Esp_lyr11", 'NEW_SELECTION', "lower(" + input_Clasificacion_tipo + ") IN (lower('Expansion'), lower('Urbano'))")
+#Realizar un resumen por la columna FID_CLasificacion_Suelo
+arcpy.Frequency_analysis("intersect_clas_Esp_lyr11", input_gdb +"\Stadisticas_Esp", ["FID_Clasificacion_Suelo"])
+num_esp= arcpy.GetCount_management(input_gdb +"\Stadisticas_Esp")
+
+if (int(str(num_urbano)) + int(str(num_expansion))) == int(str(num_esp)):
+    print("Regla No 11: La base de datos es CONFORME con la regla 11")
+else:
+    print("Regla No 11: La base de datos es NO CONFORME con la regla 11")
+    
+arcpy.Delete_management(input_dataset + "\intersect_clas_Esp")
+arcpy.Delete_management(input_gdb +"\Stadisticas_Esp")
+
+
+##  REGLA 12 ### 
+
+#SELECT  PRIMERO CLASIFICACION DEL SUELO (Urbano-Expansion) luego si por select BY LOCATION NOT INTERSECT con la capa vias
+
+
+# Crear una capa temporal
+arcpy.MakeFeatureLayer_management(input_Clasificacion_suelo, "Clasificacion_Suelo_lyr12")
+arcpy.MakeFeatureLayer_management(input_Vias, "Vias_lyr12")
+# Intersect de equipamientos y clasificacion del suelo
+arcpy.Intersect_analysis (["Clasificacion_Suelo_lyr12", "Vias_lyr12"], input_dataset + "\intersect_clas_vias", "ALL", "", "")
+#De la capa con equipamientos seleccionar que sean de tipo Urbano y Expansion
+arcpy.MakeFeatureLayer_management(input_dataset + "\intersect_clas_vias", "intersect_clas_vias_lyr12")
+arcpy.SelectLayerByAttribute_management("intersect_clas_vias_lyr12", 'NEW_SELECTION', "lower(" + input_Clasificacion_tipo + ") IN (lower('Expansion'), lower('Urbano'))")
+#Realizar un resumen por la columna FID_CLasificacion_Suelo
+arcpy.Frequency_analysis("intersect_clas_vias_lyr12", input_gdb +"\Stadisticas_Vias", ["FID_Clasificacion_Suelo"])
+num_vias= arcpy.GetCount_management(input_gdb +"\Stadisticas_Vias")
+
+
+print("Regla No 12: Hay "+ str(abs(int(str(num_vias))- int(str(num_urbano)) - int(str(num_expansion)))) +" elemento(s) que no cumplen con la regla 12.")
+
+#if (int(str(num_urbano)) + int(str(num_expansion))) == int(str(num_vias)):
+#    print("Regla No 12: La base de datos es CONFORME con la regla 12")
+#else:
+#    print("Regla No 12: La base de datos es NO CONFORME con la regla 12")
+    
+arcpy.Delete_management(input_dataset + "\intersect_clas_vias")
+arcpy.Delete_management(input_gdb +"\Stadisticas_Vias")
+
+
+##  REGLA 13 ### 
+
+#SELECT  PRIMERO CLASIFICACION DEL SUELO (Urbano-Expansion) luego si por select BY LOCATION NOT INTERSECT con la capa Servicios Publicos
+
+
+# Crear una capa temporal
+arcpy.MakeFeatureLayer_management(input_Clasificacion_suelo, "Clasificacion_Suelo_lyr13")
+arcpy.MakeFeatureLayer_management(input_Servicios_Publicos, "Servicios_Publicos_lyr13")
+# Intersect de equipamientos y clasificacion del suelo
+arcpy.Intersect_analysis (["Clasificacion_Suelo_lyr13", "Servicios_Publicos_lyr13"], input_dataset + "\intersect_clas_serv", "ALL", "", "")
+#De la capa con equipamientos seleccionar que sean de tipo Urbano y Expansion
+arcpy.MakeFeatureLayer_management(input_dataset + "\intersect_clas_serv", "intersect_clas_serv_lyr13")
+arcpy.SelectLayerByAttribute_management("intersect_clas_serv_lyr13", 'NEW_SELECTION', "lower(" + input_Clasificacion_tipo + ") IN (lower('Expansion'), lower('Urbano'))")
+#Realizar un resumen por la columna FID_CLasificacion_Suelo
+arcpy.Frequency_analysis("intersect_clas_serv_lyr13", input_gdb +"\Stadisticas_Serv", ["FID_Clasificacion_Suelo"])
+num_serv= arcpy.GetCount_management(input_gdb +"\Stadisticas_Serv")
+
+print("Regla No 13: Hay "+ str(abs(int(str(num_serv))- int(str(num_urbano)) - int(str(num_expansion)))) +" elemento(s) que no cumplen con la regla 13.")
+
+
+#if (int(str(num_urbano)) + int(str(num_expansion))) == int(str(num_serv)):
+#    print("Regla No 13: La base de datos es CONFORME con la regla 13")
+#else:
+#    print("Regla No 13: La base de datos es NO CONFORME con la regla 13")
+    
+arcpy.Delete_management(input_dataset + "\intersect_clas_serv")
+arcpy.Delete_management(input_gdb +"\Stadisticas_Serv")
+
+##  REGLA 14 ###
+
+#SELECT  PRIMERO CLASIFICAICON DEL SUELO (Urbano) no tenga vias existentes y servicios existentes
+
+# Crear una capa temporal Clasificacion
+arcpy.MakeFeatureLayer_management(input_Clasificacion_suelo, "Clasificacion_Suelo_lyr14")
+arcpy.MakeFeatureLayer_management(input_Vias, "Vias_lyr14")
+# Seleccion de clasificacion que si intersecta con las vias
+arcpy.Intersect_analysis (["Clasificacion_Suelo_lyr14", "Vias_lyr14"], input_dataset + "\intersect_clas_vias1", "ALL", "", "")
+# Seleccion de clasificacion que es de tipo Urbano
+arcpy.MakeFeatureLayer_management(input_dataset + "\intersect_clas_vias1", "intersect_clas_vias1_lyr14")
+arcpy.SelectLayerByAttribute_management("intersect_clas_vias1_lyr14", 'NEW_SELECTION', "lower(" + input_Clasificacion_tipo + ") in (lower('Urbano')) AND  lower("+ input_Vias_tipo +") in (lower('Existente'))")
+#Realizar un resumen por la columna FID_CLasificacion_Suelo
+arcpy.Frequency_analysis("intersect_clas_vias1_lyr14", input_gdb +"\Stadisticas_Vias1", ["FID_Clasificacion_Suelo"])
+num_vias1= arcpy.GetCount_management(input_gdb +"\Stadisticas_Vias1")
+
+print("Regla No 14: Hay "+ str(abs(int(str(num_urbano)) - int(str(num_vias1)))) +" elemento(s) que no cumplen con la regla 14.1.")
+
+#if int(str(num_urbano)) == int(str(num_vias1)):
+#    print("Regla No 14: La base de datos es CONFORME con la regla 14.1")
+#else:
+#    print("Regla No 14: La base de datos es NO CONFORME con la regla 14.1")
+    
+arcpy.Delete_management(input_dataset + "\intersect_clas_vias1")
+arcpy.Delete_management(input_gdb +"\Stadisticas_Vias1")
+
+#SERVICIOS
+
+# Crear una capa temporal Clasificacion
+arcpy.MakeFeatureLayer_management(input_Clasificacion_suelo, "Clasificacion_Suelo_lyr14_1")
+arcpy.MakeFeatureLayer_management(input_Servicios_Publicos, "Servicios_Publicos_lyr14_1")
+# Seleccion de clasificacion que si intersecta con las vias
+arcpy.Intersect_analysis (["Clasificacion_Suelo_lyr14_1", "Servicios_Publicos_lyr14_1"], input_dataset + "\intersect_clas_serv1", "ALL", "", "")
+# Seleccion de clasificacion que es de tipo Urbano
+arcpy.MakeFeatureLayer_management(input_dataset + "\intersect_clas_serv1", "intersect_clas_serv1_lyr14")
+arcpy.SelectLayerByAttribute_management("intersect_clas_serv1_lyr14", 'NEW_SELECTION', "lower(" + input_Clasificacion_tipo + ") in (lower('Urbano')) AND lower("+ input_Servicios_Publicos_tipo +") in (lower('Existente'))")
+#Realizar un resumen por la columna FID_CLasificacion_Suelo
+arcpy.Frequency_analysis("intersect_clas_serv1_lyr14", input_gdb +"\Stadisticas_Serv1", ["FID_Clasificacion_Suelo"])
+num_serv1= arcpy.GetCount_management(input_gdb +"\Stadisticas_Serv1")
+
+print("Regla No 14: Hay "+ str(abs(int(str(num_urbano)) - int(str(num_serv1)))) +" elemento(s) que no cumplen con la regla 14.2.")
+
+#if int(str(num_urbano)) == int(str(num_serv1)):
+#    print("Regla No 14: La base de datos es CONFORME con la regla 14.2")
+#else:
+#    print("Regla No 14: La base de datos es NO CONFORME con la regla 14.2")
+    
+arcpy.Delete_management(input_dataset + "\intersect_clas_serv1")
+arcpy.Delete_management(input_gdb +"\Stadisticas_Serv1")
+
+
+##  REGLA 15 ### 
+
+#SELECT  PRIMERO CLASIFICACION DEL SUELO (Expansion) no tenga vias proyectadas y servicios proyectadas
+
+
+# Crear una capa temporal Clasificacion
+arcpy.MakeFeatureLayer_management(input_Clasificacion_suelo, "Clasificacion_Suelo_lyr15")
+arcpy.MakeFeatureLayer_management(input_Vias, "Vias_lyr15")
+# Seleccion de clasificacion que si intersecta con las vias
+arcpy.Intersect_analysis (["Clasificacion_Suelo_lyr15", "Vias_lyr15"], input_dataset + "\intersect_clas_vias15", "ALL", "", "")
+# Seleccion de clasificacion que es de tipo Urbano
+arcpy.MakeFeatureLayer_management(input_dataset + "\intersect_clas_vias15", "intersect_clas_vias15_lyr15")
+arcpy.SelectLayerByAttribute_management("intersect_clas_vias15_lyr15", 'NEW_SELECTION', "lower(" + input_Clasificacion_tipo + ") in (lower('Expansion')) AND lower("+ input_Vias_tipo +") in (lower('Proyectado'))")
+#Realizar un resumen por la columna FID_CLasificacion_Suelo
+arcpy.Frequency_analysis("intersect_clas_vias15_lyr15", input_gdb +"\Stadisticas_Vias15", ["FID_Clasificacion_Suelo"])
+num_vias2= arcpy.GetCount_management(input_gdb +"\Stadisticas_Vias15")
+
+print("Regla No 15: Hay "+ str(abs(int(str(num_expansion)) - int(str(num_vias2)))) +" elemento(s) que no cumplen con la regla 15.1.")
+
+#if int(str(num_expansion)) == int(str(num_vias2)):
+#    print("Regla No 15: La base de datos es CONFORME con la regla 15.1")
+#else:
+#    print("Regla No 15: La base de datos es NO CONFORME con la regla 15.1")
+    
+arcpy.Delete_management(input_dataset + "\intersect_clas_vias15")
+arcpy.Delete_management(input_gdb +"\Stadisticas_Vias15")
+
+#SERVICIOS
+
+# Crear una capa temporal Clasificacion
+arcpy.MakeFeatureLayer_management(input_Clasificacion_suelo, "Clasificacion_Suelo_lyr15_1")
+arcpy.MakeFeatureLayer_management(input_Servicios_Publicos, "Servicios_Publicos_lyr15_1")
+# Seleccion de clasificacion que si intersecta con los servicios
+arcpy.Intersect_analysis (["Clasificacion_Suelo_lyr15_1", "Servicios_Publicos_lyr15_1"], input_dataset + "\intersect_clas_serv15", "ALL", "", "")
+# Seleccion de clasificacion que es de tipo Urbano
+arcpy.MakeFeatureLayer_management(input_dataset + "\intersect_clas_serv15", "intersect_clas_serv15_lyr15")
+arcpy.SelectLayerByAttribute_management("intersect_clas_serv15_lyr15", 'NEW_SELECTION', "lower(" + input_Clasificacion_tipo + ") in (lower('Expansion')) AND lower("+ input_Servicios_Publicos_tipo +") in (lower('Proyectado'))")
+#Realizar un resumen por la columna FID_CLasificacion_Suelo
+arcpy.Frequency_analysis("intersect_clas_serv15_lyr15", input_gdb +"\Stadisticas_Serv15", ["FID_Clasificacion_Suelo"])
+num_serv2= arcpy.GetCount_management(input_gdb +"\Stadisticas_Serv15")
+
+print("Regla No 15: Hay "+ str(abs(int(str(num_expansion)) - int(str(num_serv2)))) +" elemento(s) que no cumplen con la regla 15.2.")
+
+#if int(str(num_expansion)) == int(str(num_serv2)):
+#    print("Regla No 15: La base de datos es CONFORME con la regla 15.2")
+#else:
+#    print("Regla No 15: La base de datos es NO CONFORME con la regla 15.2")
+    
+arcpy.Delete_management(input_dataset + "\intersect_clas_serv15")
+arcpy.Delete_management(input_gdb +"\Stadisticas_Serv15")
+
+
+#REGLA 16#
+
+
+# Crear una capa temporal
+arcpy.MakeFeatureLayer_management(input_Clasificacion_suelo, "Clasificacion_Suelo_lyr16")
+arcpy.MakeFeatureLayer_management(input_Zonavis, "Zona_VIS_lyr16")
+# Intersect de equipamientos y clasificacion del suelo
+arcpy.Intersect_analysis (["Clasificacion_Suelo_lyr16", "Zona_VIS_lyr16"], input_dataset + "\intersect_clas_vis", "ALL", "", "")
+#De la capa con equipamientos seleccionar que sean de tipo Urbano y Expansion
+arcpy.MakeFeatureLayer_management(input_dataset + "\intersect_clas_vis", "intersect_clas_vis_lyr16")
+arcpy.SelectLayerByAttribute_management("intersect_clas_vis_lyr16", 'NEW_SELECTION', "lower(" + input_Clasificacion_tipo + ") in (lower('Expansion'),lower('Urbano'))")
+#Realizar un resumen por la columna FID_CLasificacion_Suelo
+arcpy.Frequency_analysis("intersect_clas_vis_lyr16", input_gdb +"\Stadisticas_vis", ["FID_Clasificacion_Suelo"])
+num_vis= arcpy.GetCount_management(input_gdb +"\Stadisticas_vis")
+
+if (int(str(num_urbano)) + int(str(num_expansion))) == int(str(num_vis)):
+    print("Regla No 16: La base de datos es CONFORME con la regla 16")
+else:
+    print("Regla No 16: La base de datos es NO CONFORME con la regla 16")
+    
+arcpy.Delete_management(input_dataset + "\intersect_clas_vis")
+arcpy.Delete_management(input_gdb +"\Stadisticas_vis")
+
+
+#REGLA 17#
+
+#arcpy.Intersect_analysis (["vegetation_stands", "road_buffer200m", "water_buffer100"], "mysites", "ALL", "", "")
+# Crear una capa temporal
+arcpy.MakeFeatureLayer_management(input_Clasificacion_suelo, "Clasificacion_Suelo_lyr19")
+arcpy.MakeFeatureLayer_management(input_Tratamiento_Urbanistico, "Tratamiento_Urbanistico_lyr19")
+# Seleccion de clasificacion que si intersecta con Tratamiento_Urbanistico
+arcpy.Intersect_analysis (["Clasificacion_Suelo_lyr19", "Tratamiento_Urbanistico_lyr19"], input_dataset + "\intersect_clas_trat", "NO_FID", "", "")
+#De la capa sin equipamientos seleccionar que sean de tipo Rural
+arcpy.MakeFeatureLayer_management(input_dataset + "\intersect_clas_trat", "intersect_clas_trat_lyr19")
+arcpy.SelectLayerByAttribute_management("intersect_clas_trat_lyr19", 'NEW_SELECTION', "lower(" + input_Clasificacion_tipo + ") in (lower('Rural'),'') OR " + input_Clasificacion_tipo + " IS NULL")
+result19= arcpy.GetCount_management("intersect_clas_trat_lyr19")
+arcpy.CopyFeatures_management("intersect_clas_trat_lyr19", input_dataset+'\Result19')
+
+
+print("Regla No 17: Hay "+ str(result19) +" elemento(s) que no cumplen con la regla 19.")
+
+##Mirar los dominios
+
+# Crear una capa temporal Clasificacion
+arcpy.MakeFeatureLayer_management(input_dataset + "\intersect_clas_trat", "intersect_clas_trat_lyr19_1")
+#De la capa sin equipamientos seleccionar que sean de tipo Urbano
+arcpy.SelectLayerByAttribute_management("intersect_clas_trat_lyr19_1", 'NEW_SELECTION', "lower(" + input_Clasificacion_tipo + ") IN (lower('Urbano'))")
+result19_1= arcpy.GetCount_management("intersect_clas_trat_lyr19_1")
+#De los tratamientos seleccionar los que no tengan dominio adecuado
+arcpy.SelectLayerByAttribute_management("intersect_clas_trat_lyr19_1", 'SUBSET_SELECTION', "lower("+ input_Tratamiento_Urbanistico_tipo + ") NOT IN (lower('Consolidacion'),lower('Mejoramiento Integral'),lower('Renovacion Urbana'),lower('Conservacion'),lower('Desarrollo')) OR " + input_Tratamiento_Urbanistico_tipo + " IS NULL OR " + input_Tratamiento_Urbanistico_tipo + " = ''")
+result19_1= arcpy.GetCount_management("intersect_clas_trat_lyr19_1")
+arcpy.CopyFeatures_management("intersect_clas_trat_lyr19_1", input_dataset+'\Result19_1')
+
+print("Regla No 17: Hay "+ str(result19_1) +" elemento(s) que no cumplen con el dominio de Tratamientos para suelos Urbanos")
+
+
+# Crear una capa temporal Clasificacion
+arcpy.MakeFeatureLayer_management(input_dataset + "\intersect_clas_trat", "intersect_clas_trat_lyr19_2")
+#De la capa sin equipamientos seleccionar que sean de tipo Urbano
+arcpy.SelectLayerByAttribute_management("intersect_clas_trat_lyr19_2", 'NEW_SELECTION', "lower(" + input_Clasificacion_tipo + ") IN (lower('Expansion'))")
+result19_2= arcpy.GetCount_management("intersect_clas_trat_lyr19_2")
+#De los tratamientos seleccionar los que no tengan dominio adecuado
+arcpy.SelectLayerByAttribute_management("intersect_clas_trat_lyr19_2", 'SUBSET_SELECTION', "lower("+ input_Tratamiento_Urbanistico_tipo + ")  NOT IN (lower('Conservacion'),lower('Desarrollo')) OR " + input_Tratamiento_Urbanistico_tipo + " IS NULL OR " + input_Tratamiento_Urbanistico_tipo + " = ''")
+result19_2= arcpy.GetCount_management("intersect_clas_trat_lyr19_2")
+arcpy.CopyFeatures_management("intersect_clas_trat_lyr19_2", input_dataset+'\Result19_2')
+
+print("Regla No 17: Hay "+ str(result19_2) +" elemento(s) que no cumplen con el dominio de Tratamientos para suelos de Expansion")
+
+
+arcpy.Delete_management(input_dataset + "\intersect_clas_trat")
+
+# REGLA 18  #
+
+print("Regla No 18: Revisar la regla topologica (Must be Covered By) de la Capa: Tratamiento_Urbanistico-Suelo_Urbano_Expansion, utilizando el visor")
+
+#REGLA 19#
+
+
+# Crear una capa temporal
+arcpy.MakeFeatureLayer_management(input_Clasificacion_suelo, "Clasificacion_Suelo_lyr21")
+arcpy.MakeFeatureLayer_management(input_Clasificacion_Uso_Suelo, "Clasificacion_Uso_Suelo_lyr21")
+# Seleccion de clasificacion que si intersecta con Clasificacion_Uso_Suelo
+arcpy.Intersect_analysis (["Clasificacion_Suelo_lyr21", "Clasificacion_Uso_Suelo_lyr21"], input_dataset + "\intersect_clas_uso", "NO_FID", "", "")
+#De la capa sin equipamientos seleccionar que sean de tipo Rural
+arcpy.MakeFeatureLayer_management(input_dataset + "\intersect_clas_uso", "intersect_clas_uso_lyr21")
+arcpy.SelectLayerByAttribute_management("intersect_clas_uso_lyr21", 'NEW_SELECTION', "lower(" + input_Clasificacion_tipo + ") IN (lower('Rural'),'') OR " + input_Clasificacion_tipo + " IS NULL")
+result21= arcpy.GetCount_management("intersect_clas_uso_lyr21")
+arcpy.CopyFeatures_management("intersect_clas_uso_lyr21", input_dataset+'\Result21')
+
+print("Regla No 19: Hay "+ str(result21) +" elemento(s) que no cumplen con la regla")
+
+arcpy.Delete_management(input_dataset + "\intersect_clas_uso")
+
+# REGLA 20  #
+
+print("Regla No 20: Revisar la regla topologica (Must be Covered By) de la Capa: Clase_Uso_Suelo-Suelo_Urbano_Rural, utilizando el visor")
+
+
+#REGLA 21#
+
+
+# Crear una capa temporal
+arcpy.MakeFeatureLayer_management(input_Municipio, "Municipio_lyr23")
+arcpy.MakeFeatureLayer_management(input_Proteccion, "Suelos_Proteccion_lyr23")
+# Seleccion de clasificacion que si intersecta con Suelos_Proteccion
+arcpy.Intersect_analysis (["Municipio_lyr23", "Suelos_Proteccion_lyr23"], input_dataset + "\intersect_mun_prot", "NO_FID", "", "")
+result23= arcpy.GetCount_management(input_dataset + "\intersect_mun_prot")
+arcpy.CopyFeatures_management(input_dataset + "\intersect_mun_prot", input_dataset+'\Result23')
+
+if int(str(result23)) > 0:
+    print("Regla No 21: La base de datos es CONFORME con la regla")
+else:
+    print("Regla No 21: La base de datos es NO CONFORME con la regla")
+
+
+arcpy.Delete_management(input_dataset + "\intersect_mun_prot")
+    
+
+#REGLA 22# 
+
+
+# Crear una capa temporal
+arcpy.MakeFeatureLayer_management(input_Clasificacion_suelo, "Clasificacion_Suelo_lyr24")
+arcpy.MakeFeatureLayer_management(input_Desarrollo_restringido, "Desarrollo_Restringido_lyr24")
+# Seleccion de clasificacion que si intersecta con Desarrollo_Restringido
+arcpy.Intersect_analysis (["Clasificacion_Suelo_lyr24", "Desarrollo_Restringido_lyr24"], input_dataset + "\intersect_clas_des", "NO_FID", "", "")
+#De la capa sin equipamientos seleccionar que sean de tipo Urbano y Expansion
+arcpy.MakeFeatureLayer_management(input_dataset + "\intersect_clas_des", "intersect_clas_des_lyr24")
+arcpy.SelectLayerByAttribute_management("intersect_clas_des_lyr24", 'NEW_SELECTION', "lower(" + input_Clasificacion_tipo + ") IN (lower('Urbano'),lower('Expansion'),'') OR " + input_Clasificacion_tipo + " IS NULL")
+result24= arcpy.GetCount_management("intersect_clas_des_lyr24")
+arcpy.CopyFeatures_management("intersect_clas_des_lyr24", input_dataset + '\Result24')
+
+print("Regla No 22: Hay "+ str(result24) +" elemento(s) que no cumplen con la regla.")
+
+arcpy.Delete_management(input_dataset + "\intersect_clas_des")
+
+
+#REGLA 23#
+
+
+# Crear una capa temporal
+arcpy.MakeFeatureLayer_management(input_Clasificacion_suelo, "Clasificacion_Suelo_lyr25")
+arcpy.MakeFeatureLayer_management(input_Rural_Produccion, "Suelos_Produccion_lyr25")
+# Seleccion de clasificacion que si intersecta con Suelos_Produccion
+arcpy.Intersect_analysis (["Clasificacion_Suelo_lyr25", "Suelos_Produccion_lyr25"], input_dataset + "\intersect_clas_prod", "NO_FID", "", "")
+#De la capa de produccion  seleccionar que sean de tipo Urbano y Expansion
+arcpy.MakeFeatureLayer_management(input_dataset + "\intersect_clas_prod", "intersect_clas_prod_lyr25")
+arcpy.SelectLayerByAttribute_management("intersect_clas_prod_lyr25", 'NEW_SELECTION', "lower(" + input_Clasificacion_tipo + ") IN (lower('Urbano'),lower('Expansion'),'') OR " + input_Clasificacion_tipo + " IS NULL")
+result25= arcpy.GetCount_management("intersect_clas_prod_lyr25")
+arcpy.CopyFeatures_management("intersect_clas_prod_lyr25", input_dataset + '\Result25')
+
+print("Regla No 23: Hay "+ str(result25) +" elemento(s) que no cumplen con la regla.")
+
+arcpy.Delete_management(input_dataset + "\intersect_clas_prod")
+
+#REGLA 24#
+
+# Crear una capa temporal Clasificacion
+arcpy.MakeFeatureLayer_management(input_Clasificacion_suelo, "Clasificacion_Suelo_lyr26")
+arcpy.MakeFeatureLayer_management(input_Desarrollo_restringido, "Desarrollo_Restringido_lyr26")
+arcpy.MakeFeatureLayer_management(input_Plusvalia, "Causal_Plusvalia_lyr26")
+
+# Seleccion de clasificacion que si intersecta con Causal de Plusvalia
+arcpy.Intersect_analysis (["Clasificacion_Suelo_lyr26", "Causal_Plusvalia_lyr26"], input_dataset + "\intersect_clas_plus", "NO_FID", "", "")
+# Seleccion de clasificacion que es de tipo Rural
+arcpy.MakeFeatureLayer_management(input_dataset + "\intersect_clas_plus", "intersect_clas_plus_lyr26")
+arcpy.SelectLayerByAttribute_management("intersect_clas_plus_lyr26", 'NEW_SELECTION', "lower(" + input_Clasificacion_tipo + ") IN ('Rural')")
+total_rur26 = arcpy.GetCount_management("intersect_clas_plus_lyr26")
+#Hacer capa temporal
+arcpy.MakeFeatureLayer_management("intersect_clas_plus_lyr26", "intersect_clas_plus_lyr26_v")
+#Seleccionar zonas de plusvalia en zonas rurales
+arcpy.Intersect_analysis (["intersect_clas_plus_lyr26_v", "Desarrollo_Restringido_lyr26"], input_dataset + "\intersect_plus_des", "NO_FID", "", "")
+total_des = arcpy.GetCount_management(input_dataset + "\intersect_plus_des")
+pfinal26 =  (int(str(total_rur26)))-(int(str(total_des)))
+# Seleccion de clasificacion que es de tipo Rural
+arcpy.MakeFeatureLayer_management(input_dataset + "\intersect_plus_des", "intersect_plus_des_lyr26")
+arcpy.SelectLayerByAttribute_management("intersect_plus_des_lyr26", 'NEW_SELECTION', "lower(" + input_Desarrollo_restringido_tipo + ") NOT IN (lower('Suburbano'))")
+result26= arcpy.GetCount_management("intersect_plus_des_lyr26")
+arcpy.CopyFeatures_management("intersect_plus_des_lyr26", input_dataset + '\Result26')
+final26 =  (int(str(total_rur26)))-(int(str(result26)))- pfinal26
+
+print("Regla No 24: Hay "+ str(final26) +" elemento(s) que no cumplen con la regla.")
+
+arcpy.Delete_management(input_dataset + "\intersect_clas_plus")
+arcpy.Delete_management(input_dataset + "\intersect_plus_des")
+
+
+#REGLA 25#
+#NO APLICA EN EL VALIDADOR#
+print("Regla No 25: No aplica para el validador ya que es una capa externa de otro modelo LADM-COL (PNN)")
+#REGLA 26#
+#NO APLICA EN EL VALIDADOR#
+print("Regla No 26: No aplica para el validador ya que es una capa externa de otro modelo LADM-COL (Riesgo)")
+#REGLA 27#
+#NO APLICA EN EL VALIDADOR#
+print("Regla No 27: No aplica para el validador ya que es una capa externa de otro modelo LADM-COL (Riesgo)")
+#REGLA 28#
+#NO APLICA EN EL VALIDADOR#
+print("Regla No 28: No aplica para el validador ya que es una capa externa de otro modelo LADM-COL (Riesgo)")
+
+#REGLA 29# 
+
+
+# Crear una capa temporal
+arcpy.MakeFeatureLayer_management(input_Clasificacion_suelo, "Clasificacion_Suelo_lyr17")
+arcpy.MakeFeatureLayer_management(input_Reubicacion, "Reubicacion_asentamientos_lyr17")
+# Intersect de equipamientos y clasificacion del suelo
+arcpy.Intersect_analysis (["Clasificacion_Suelo_lyr17", "Reubicacion_asentamientos_lyr17"], input_dataset + "\intersect_clas_reas", "ALL", "", "")
+#De la capa con equipamientos seleccionar que sean de tipo Urbano y Expansion
+arcpy.MakeFeatureLayer_management(input_dataset + "\intersect_clas_reas", "intersect_clas_reas_lyr17")
+arcpy.SelectLayerByAttribute_management("intersect_clas_reas_lyr17", 'NEW_SELECTION', "lower(" + input_Clasificacion_tipo + ") in (lower('Expansion'),lower('Urbano'))")
+#Realizar un resumen por la columna FID_CLasificacion_Suelo
+arcpy.Frequency_analysis("intersect_clas_reas_lyr17", input_gdb +"\Stadisticas_reas", ["FID_Clasificacion_Suelo"])
+num_reas= arcpy.GetCount_management(input_gdb +"\Stadisticas_reas")
+
+if (int(str(num_urbano)) + int(str(num_expansion))) == int(str(num_reas)):
+    print("Regla No 29: La base de datos es CONFORME con la regla 29")
+else:
+    print("Regla No 29: La base de datos es NO CONFORME con la regla 29")
+    
+arcpy.Delete_management(input_dataset + "\intersect_clas_reas")
+arcpy.Delete_management(input_gdb +"\Stadisticas_reas")
+
+
+#REGLA 30#
+
+print("Regla No 30: Revisar la regla topologica (Must be Covered By) de la Capa: Tipo_Riesgo-Municipio, utilizando el visor")
+
+
+
+
+
+Ruta_salida=arcpy.GetParameterAsText(22)
+Ruta_salida+='.txt'
+outtable = open(Ruta_salida, "w")
+arcpy.AddMessage("\n*****************************************************************************")
+arcpy.AddMessage("********************* *VALIDADOR DE LAS EETT DE LA CLASIFICACION DEL SUELO***********")
+arcpy.AddMessage("*****************************************************************************")
+outtable.write("\n VALIDADOR DE LAS EETT DE LA CLASIFICACION DEL SUELO \n\n\n")
+outtable.write("\n Informe generado por validador de las reglas Internas y Externas de las EETT de la Clasificacion del suelo de los POT\n\n")
+outtable.write("Regla No 1: Hay "+ str(result1) +" elemento(s) que no cumplen con la regla.\n\n")
+outtable.write("Regla No 2: Revisar la regla topologica (Must not Overlap) de la Capa: Clasificacion del Suelo, utilizando el visor.\n\n")
+outtable.write("Regla No 3: Revisar la regla topologica (Must be Covered By) de la Capa: Clasificacion del Suelo-Municipio, utilizando el viso.\n\n")
+outtable.write("Regla No 4: Hay "+ str(result4) +" elemento(s) que no cumplen con la regla.\n\n")
+outtable.write("Regla No 5: Revisar la regla topologica (Must Not Have Gaps) Capa: Clasificacion del Suelo y la regla topologica (Boundary Must Be Covered By Boundary Of) de la capa: Clasificacion del Suelo-Municipio, utilizando el visor.\n\n")
+outtable.write("Regla No 6: Revisar la regla topologica (Must not Overlap) de la Capa: Clasificacion del Suelo, utilizando el visor.\n\n")
+outtable.write("Regla No 7: Hay "+ str(result7) +" elemento(s) que no cumplen con la regla.\n\n")
+outtable.write("Regla No 8: No aplica para el validador.\n\n")
+outtable.write("Regla No 9: No aplica para el validador.\n\n")
+
+if (int(str(num_urbano)) + int(str(num_expansion))) == int(str(num_equi)):
+    outtable.write("Regla No 10: La base de datos es CONFORME con la regla 10.\n\n")
+else:
+    outtable.write("Regla No 10: La base de datos es NO CONFORME con la regla 10.\n\n")
+    
+if (int(str(num_urbano)) + int(str(num_expansion))) == int(str(num_esp)):
+    outtable.write("Regla No 11: La base de datos es CONFORME con la regla 11.\n\n")
+else:
+    outtable.write("Regla No 11: La base de datos es NO CONFORME con la regla 11.\n\n")
+    
+outtable.write("Regla No 12: Hay "+ str(abs(int(str(num_vias))- int(str(num_urbano)) - int(str(num_expansion)))) +" elemento(s) que no cumplen con la regla 12.\n\n")
+outtable.write("Regla No 13: Hay "+ str(abs(int(str(num_serv))- int(str(num_urbano)) - int(str(num_expansion)))) +" elemento(s) que no cumplen con la regla 13.\n\n")
+outtable.write("Regla No 14: Hay "+ str(abs(int(str(num_urbano)) - int(str(num_vias1)))) +" elemento(s) que no cumplen con la regla 14.1.\n\n")
+outtable.write("Regla No 14: Hay "+ str(abs(int(str(num_urbano)) - int(str(num_serv1)))) +" elemento(s) que no cumplen con la regla 14.2.\n\n")
+outtable.write("Regla No 15: Hay "+ str(abs(int(str(num_expansion)) - int(str(num_vias2)))) +" elemento(s) que no cumplen con la regla 15.1.\n\n")
+outtable.write("Regla No 15: Hay "+ str(abs(int(str(num_expansion)) - int(str(num_serv2)))) +" elemento(s) que no cumplen con la regla 15.2.\n\n")
+
+
+if (int(str(num_urbano)) + int(str(num_expansion))) == int(str(num_vis)):
+    outtable.write("Regla No 16: La base de datos es CONFORME con la regla 16.\n\n")
+else:
+    outtable.write("Regla No 16: La base de datos es NO CONFORME con la regla 16.\n\n")
+
+outtable.write("Regla No 17: Hay "+ str(result19) +" elemento(s) que no cumplen con la regla 17.\n\n")
+outtable.write("Regla No 17: Hay "+ str(result19_1) +" elemento(s) que no cumplen con el dominio de Tratamientos para suelos Urbanos.\n\n")
+outtable.write("Regla No 17: Hay "+ str(result19_2) +" elemento(s) que no cumplen con el dominio de Tratamientos para suelos de Expansion.\n\n")
+outtable.write("Regla No 18: Revisar la regla topologica (Must be Covered By) de la Capa: Tratamiento_Urbanistico-Suelo_Urbano_Expansion, utilizando el visor.\n\n")
+outtable.write("Regla No 19: Hay "+ str(result21) +" elemento(s) que no cumplen con la regla.\n\n")
+outtable.write("Regla No 20: Revisar la regla topologica (Must be Covered By) de la Capa: Clase_Uso_Suelo-Suelo_Urbano_Expansion, utilizando el visor.\n\n")
+
+if int(str(result23)) > 0:
+    outtable.write("Regla No 21: La base de datos es CONFORME con la regla 21.\n\n")
+else:
+    outtable.write("Regla No 21: La base de datos es NO CONFORME con la regla 21.\n\n")
+    
+outtable.write("Regla No 22: Hay "+ str(result24) +" elemento(s) que no cumplen con la regla.\n\n")
+outtable.write("Regla No 23: Hay "+ str(result25) +" elemento(s) que no cumplen con la regla.\n\n")
+outtable.write("Regla No 24: Hay "+ str(final26) +" elemento(s) que no cumplen con la regla.\n\n")
+outtable.write("Regla No 25: No aplica para el validador ya que es una capa externa de otro modelo LADM-COL (PNN).\n\n")
+outtable.write("Regla No 26: No aplica para el validador ya que es una capa externa de otro modelo LADM-COL (Riesgo).\n\n")
+outtable.write("Regla No 27: No aplica para el validador ya que es una capa externa de otro modelo LADM-COL (Riesgo).\n\n")
+outtable.write("Regla No 28: No aplica para el validador ya que es una capa externa de otro modelo LADM-COL (Riesgo).\n\n")
+
+if (int(str(num_urbano)) + int(str(num_expansion))) == int(str(num_reas)):
+    outtable.write("Regla No 29: La base de datos es CONFORME con la regla 29.\n\n")
+else:
+    outtable.write("Regla No 29: La base de datos es NO CONFORME con la regla 29.\n\n")
+
+outtable.write("Regla No 30: Revisar la regla topologica (Must be Covered By) de la Capa: Tipo_Riesgo-Municipio, utilizando el visor.\n\n")
+########################################################################################
