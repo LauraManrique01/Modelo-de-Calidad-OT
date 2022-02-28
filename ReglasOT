@@ -1,0 +1,50 @@
+REGLAS DE CALIDAD
+
+#Requerimientos generales:
+•	R1: La capa de Clasificación del Suelo únicamente debe estar delimitada para la zona de estudio. Es decir que, el polígono de clasificación del Suelo no debe sobrepasar los límites geográficos y/o el perímetro del municipio.
+•	R2: En la capa de clasificación del suelo no deben existir duplicidad de áreas geográficas; una zona debe estar cubierta únicamente por un solo polígono de clasificación del suelo.
+•	R3: En la capa de clasificación de suelo, toda el área del municipio de estudio, debe estar clasificado en alguna tipología (Urbana, rural o de Expansión), es decir que no debe existir ninguna zona de la jurisdicción sin ser clasificada con esas clases.
+•	R4: Todo elemento de la capa de clasificación del suelo no debe tener atributos vacíos en sus campos de clasificación.
+•	R5: Topológicamente, la capa de clasificación del Suelo no debe tener espacios vacíos o polígonos ficticios que se hayan generado en la creación de los polígonos y que corresponden a error de edición.
+•	R6: Todo el territorio del Municipio de estudio, debe estar clasificado con solo una tipología (Urbano, rural o de Expansión); no puede una zona estar clasificada al mismo tiempo con dos o más clases del suelo. Es decir que los polígonos de clasificaciones de suelo no se pueden sobreponer entre sí.
+•	R7: Toda área de un municipio o una zona de estudio debe ser clasificado únicamente entre las 3 tipologías avaladas (Rural, Urbano o de Expansión) no puede quedar ninguna zona clasificada con otro dominio distinto al estipulado.
+•	R8: Los POT se desarrollan en un periodo de tiempo de mediano y largo plazo, por lo que se debe revisar la frecuencia de mantenimiento de los datos que sean útiles para el tiempo que se va a implementar el documento.
+•	R9: Se debe verificar que lo capturado en la capa de clasificación del suelo sea consistente con las fuentes externas (Información geográfica de las demás entidades gubernamentales que hacen parte de los modelos extendidos del LADM-COL.
+
+#Requerimientos específicos:
+
+#Reglas Internas:
+•	R10: Dentro de los suelos clasificados como Urbanos y de Expansión, deben estar localizados terrenos para equipamientos colectivos de interés público o social a escala zonal o local (Equipamientos).
+•	R11: Dentro de los suelos clasificados como Urbanos y de Expansión, deben estar delimitados espacios libres y zonas verdes de escala zonal o local (Espacio_Público).
+•	R12: Todo el suelo clasificado como Urbano y de Expansión, debe contar en su totalidad con redes viales (Vías).
+•	R13: Todo el suelo clasificado como Urbano y de Expansión, debe contar en su totalidad con redes de servicios públicos domiciliarios (Servicios_Públicos).
+•	R14: 
+1) Todo el suelo clasificado como Urbano, debe contar con redes viales de tipo de estado "Existente".
+2)  Todo el suelo clasificado como Urbano, debe contar con redes de servicios públicos domiciliarios de tipo de estado "Existente".
+•	R15: 
+1) Todo el suelo clasificado como Expansión, debe contar con redes viales de tipo de estado "Proyectado".
+2)  Todo el suelo clasificado como Expansión, debe contar con redes de servicios públicos domiciliarios de tipo de estado "Proyectado".
+•	R16: Localización de terrenos en suelos clasificados como Urbano y de Expansión, cuyo uso es el de vivienda de interés social.
+•	R17: La Unidad espacial de Tratamiento Urbanístico solo puede estar ubicado espacialmente en suelos clasificados como Suelo Urbano y de Expansión.
+R17.1: En los Suelos de Clasificación Urbana, se puede presentar suelos de Tratamientos urbanísticos clasificados como: Consolidación, Mejoramiento Integral, Renovación Urbana, Conservación y Desarrollo.
+R17.2: En los suelos clasificados como de Expansión, se puede presentar suelos de Tratamientos urbanísticos clasificados como: Conservación por razones ambientales y de Desarrollo.
+•	R18: Los suelos clasificados como Suelo Urbano y de Expansión, deben estar cubiertos espacialmente en su totalidad por la Unidad de Tratamiento Urbanístico.
+•	R19: La Unidad espacial de Área de Actividad solo puede estar ubicado espacialmente dentro de los límites de suelos clasificados como Urbano y de Expansión.
+•	R20: Los suelos clasificados como Suelo Urbano y de Expansión deben estar cubiertos espacialmente en su totalidad por la Unidad de Área de Actividad.
+•	R21: Todo municipio o área de estudio debe contar con al menos un área clasificada como suelo de protección.
+Los suelos de Protección pueden estar ubicados en cualquier tipo de suelos sin importar la clasificación, pueden estar ubicados en áreas Urbanas, Rural o de Expansión.
+•	R22: La Unidad espacial de Categoría Rural Desarrollo Restringido solo puede estar ubicado espacialmente en suelos clasificados como Suelo Rural. Las áreas de Desarrollo Restringido son (Áreas suburbanas, Centros Poblados, Viviendas campestres y Equipamientos).
+•	R23: La Unidad espacial de Categoría Rural de Suelos de Producción solo puede estar ubicado espacialmente en suelos clasificados como Suelo Rural. Las áreas de Producción son (Áreas Estratégicas de interés Agropecuario, Áreas forestales y Áreas de minería e hidrocarburos).
+•	R24: La Unidad espacial de Zonas Especiales solo puede estar ubicado espacialmente en suelos clasificados como Urbanos, Expansión y Rurales únicamente en las zonas suburbanas.
+
+
+#Reglas Externas
+•	R25: Las zonas delimitadas como áreas protegidas PNN según el Modelo de dominio LADM Parques Naturales, solamente pueden estar ubicados dentro de los límites espaciales de Suelos de Protección.
+•	R26: Las zonas delimitadas en el Modelo de dominio LADM-Riesgo con tipo de restricción No Urbanizar, solamente pueden estar ubicados dentro de los límites espaciales de Suelos clasificados como de Protección. 
+•	R27: Las zonas delimitadas en el Modelo de dominio LADM-Riesgo con Condición de Riesgo No Mitigable, solamente pueden estar ubicados dentro de los límites espaciales de Suelos clasificados como de Protección. 
+•	R28: Las zonas delimitadas en el Modelo de dominio LADM-Riesgo con Nivel de Riesgo Alto, no puede estar ubicado espacialmente dentro de suelos clasificados como de Expansión.
+•	R29: Debe existir en los suelos clasificados como Urbano y de Expansión, la localización de terrenos cuyo propósito es la reubicación de asentamientos humanos localizados en zonas de alto riesgo.
+•	R30: Se debe garantizar que, para toda la extensión del territorio del área de estudio, se cuente con planos de zonas de riesgo.
+•	R31: Las zonas delimitadas como Áreas de Reserva Forestal según el Modelo de dominio LADM Reservas, solamente pueden estar ubicadas dentro de los límites espaciales de Suelos Clasificados como de Protección.
+•	R32:  Los predios delimitados según el Modelo de dominio LADM Catastro-Registro con el Tipo de Uso y Construcción de (Residencial, Comercial, Industrial e Institucional), no deben estar ubicados espacialmente dentro de los límites de Suelos de Protección (Área Especial de Interés Ambiental, Áreas de Riesgo No Mitigable e Infraestructuras asociadas a los Servicios Públicos).
+•	R33: Los predios delimitados según el Modelo de dominio LADM Catastro-Registro con el Tipo de Uso y Construcción de (Residencial, Comercial, Industrial e Institucional), solamente pueden estar ubicados espacialmente dentro de los suelos de Clasificación del suelo de Tipo Rural si corresponden a los suelos de Tipo de Desarrollo Restringido (Suburbano, Centros Poblados, Vivienda Campestre y Equipamientos) no debe haber predios en zonas de tipo de producción (Áreas estratégicas de Interés Agropecuario, de Minería e hidrocarburos). 
