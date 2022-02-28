@@ -11,43 +11,43 @@ input_dataset = arcpy.env.workspace = arcpy.GetParameterAsText(1)
 input_Clasificacion_suelo = arcpy.env.workspace = arcpy.GetParameterAsText(2)
 #Captura el atributo de tipo de clasificación de suelo
 input_Clasificacion_tipo = arcpy.env.workspace = arcpy.GetParameterAsText(3)
-#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Clasificacion_suelo\tipo"
+#Captura la capa de Tipo de riesgo
 input_Tipo_Riesgo = arcpy.env.workspace = arcpy.GetParameterAsText(4)
-#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Tipo_Riesgo"
+#Captura la capa Tratamiento Urbanistico
 input_Tratamiento_Urbanistico = arcpy.env.workspace = arcpy.GetParameterAsText(5)
-#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Tratamiento_Urbanistico"
+#Captura el atributo de tipo de tratamiento Urbanistico
 input_Tratamiento_Urbanistico_tipo = arcpy.env.workspace = arcpy.GetParameterAsText(6)
-#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Tratamiento_Urbanistico"
+#Captura la capa de Clasificación de Uso del Suelo 
 input_Clasificacion_Uso_Suelo = arcpy.env.workspace = arcpy.GetParameterAsText(7)
-#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Clasificacion_Uso_Suelo"
+#Captura la capa de Municipio
 input_Municipio = arcpy.env.workspace = arcpy.GetParameterAsText(8)
-#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Municipio"
+#Captura la capa de Equipamientos
 input_Equipamientos = arcpy.env.workspace = arcpy.GetParameterAsText(9)
-#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Equipamientos"
+#Captura la capa de Espacio Publico
 input_Espacio_Publico = arcpy.env.workspace = arcpy.GetParameterAsText(10)
-#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Espacio_Publico"
+#Captura la capa de vías
 input_Vias = arcpy.env.workspace = arcpy.GetParameterAsText(11)
-#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Vias"
+#Captura el atributo del tipo de vía
 input_Vias_tipo = arcpy.env.workspace = arcpy.GetParameterAsText(12)
-#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Vias\tipo"
+#Captura la capa de Servicios públicos
 input_Servicios_Publicos = arcpy.env.workspace = arcpy.GetParameterAsText(13)
-#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Servicios_publicos"
+#Captura el  atributo del tipo de servicios públicos 
 input_Servicios_Publicos_tipo = arcpy.env.workspace = arcpy.GetParameterAsText(14)
-#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Servicios_publicos\tipo"
+#Captura de la capa Zona VIS
 input_Zonavis = arcpy.env.workspace = arcpy.GetParameterAsText(15)
-#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\ZonaVIS"
+#Captura de la capa de reubicaciones
 input_Reubicacion = arcpy.env.workspace = arcpy.GetParameterAsText(16)
-#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Reubicacion"
+#Captura de la apa de suelos de protección
 input_Proteccion = arcpy.env.workspace = arcpy.GetParameterAsText(17)
-#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Proteccion"
+#Captura de la capa de desarrollo restringido
 input_Desarrollo_restringido = arcpy.env.workspace = arcpy.GetParameterAsText(18)
-#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Suburbano"
+#Captura del atributo de tipo de desarrollo restringido
 input_Desarrollo_restringido_tipo = arcpy.env.workspace = arcpy.GetParameterAsText(19)
-#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Desarrollo_Restringido_tipo"
+#Captura de la capa rural de producción
 input_Rural_Produccion= arcpy.env.workspace = arcpy.GetParameterAsText(20)
-#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Rural_Produccion"
+#Captura de la capa de Zonas de plusvalia
 input_Plusvalia= arcpy.env.workspace = arcpy.GetParameterAsText(21)
-#input_dataset = arcpy.env.workspace = "C:\Users\c1031159\Downloads\TESIS\VALIDADOR_GEODATABASE\Geodatabase_prueba.mdb\POT\Plusvalia"
+
 
 ##Topologia
 topo_name = "Topology"
